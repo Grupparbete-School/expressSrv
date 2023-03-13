@@ -7,7 +7,7 @@ const {client, Client} = require("@notionhq/client");         //Ett js bibliotek
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
-const database_id = process.env.NOTION_DATABASE_ID;
+const database_id = process.env.PEOPLE_DB;
 
 //Det här är egentligen ett äldre sätt att exportera funktioner.
 //Detta motsvarar "export default" som vi sett tidigare men ändrar vi detta
