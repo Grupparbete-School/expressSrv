@@ -3,6 +3,7 @@ const express = require("express");
 const app= express();
 const cors = require('cors');
 require('dotenv').config();
+const { Client } = require('@notionhq/client');
 
 //skapar de variabler vi vill att alla "routes" ska ha tillgång till.
 const encoded = process.env.SEC_ID_BASE64
@@ -10,7 +11,6 @@ let userCode = "";
 let userName = "";
 let userEmailObj = "";
 let accessToken = "";
-
 
 //eftersom vår .env inte har en "port" så kör den på port 5000.
 //Det innebär att när vi kör "npm start" så kommer vår server att köras localt på
@@ -61,6 +61,7 @@ app.get("/authorize", async (req, res) => {
 
       //Vi omvandlar datan till en json.
       const data = await notionResponse.json();
+      console.log(data)
 
       //Här hämtar vi datan vi behöver. Access_Token, användarnamn och mejladressen.
       //notera att mejladressen är ett objekt. För att få mejlet skriver vi .email efter
@@ -68,11 +69,29 @@ app.get("/authorize", async (req, res) => {
       accessToken = data.access_token;
       userName = data.owner.user.name;
       userEmailObj = data.owner.user.person;
+      console.log(userEmailObj)
       console.log(userName + " " + userEmailObj.email + " " + accessToken);
+
+      //Här kör vi funktionen som finns i "./Files/Notion.js"
+      //Den hämtar all data inuti "PEOPLE"-databasen och sparar det i variabeln names.
+      const names = await GetWork();
+      console.log(names)
+      //Kör en find-metod för att kolla om mejladressen som finns inuti "names" liknar någon av 
+      //email-raderna i datan vi fick.
+      //om det matchar så sparar vi relevant data inuti "role"-variabeln.
+      //Den är tänkt att därefter skicka till frontend för att avgöra hur menyn ska se ut.
+      let role = "";
+      const match = names.find(person => person.Email.toLowerCase() === userEmailObj.email.toLowerCase())
+      if(match){
+        role = match.Role; //+ " " + match.Name + " " + match.Email
+        console.log(role);
+      } else {
+        console.log("failed.")
+      }
 
       //Hit skickas vi om allt går som planerat. (Ej korrekt egentligen då vi ska skapa en annan route
       //som ska kolla om användaren finns med i databasen eller ej.)
-      res.redirect("http://localhost:3000/yes")
+      res.send(role + " " + userName);
   });
 
 app.listen(PORT);

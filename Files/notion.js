@@ -31,11 +31,12 @@ module.exports = GetWork = async() => {
   const work = results.map((page)=>{
     //Return säger att det är detta resultat som ska returneras och sparas inuti "work"
     return {
-        Name: page.properties.Name.title[0].text.content
-        // Role: page.properties.Role.select.name,
-        // Email: page.properties.Email.email
+        Name: page.properties.Name.title[0].text.content,
+        Role: page.properties.Role.rich_text[0].plain_text,
+        Email: page.properties.Email.email
     }
   });
+  
   //När vår funktion GetWork anropas så är det då det som finns inuti const work ovan som returneras.
   return work;
 };
