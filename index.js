@@ -81,9 +81,13 @@ app.get("/authorize", async (req, res) => {
       //om det matchar så sparar vi relevant data inuti "role"-variabeln.
       //Den är tänkt att därefter skicka till frontend för att avgöra hur menyn ska se ut.
       let role = "";
+      let name = "";
+      let email = "";
       const match = names.find(person => person.Email.toLowerCase() === userEmailObj.email.toLowerCase())
       if(match){
         role = match.Role; //+ " " + match.Name + " " + match.Email
+        name = match.Name;
+        email = match.Email
         console.log(role);
       } else {
         console.log("failed.")
@@ -91,7 +95,7 @@ app.get("/authorize", async (req, res) => {
 
       //Hit skickas vi om allt går som planerat. (Ej korrekt egentligen då vi ska skapa en annan route
       //som ska kolla om användaren finns med i databasen eller ej.)
-      res.send(role + " " + userName);
+      res.redirect(`http://localhost:3000/dashbord?userRole=${role}&userName=${name}&userEmail=${email}`)
   });
 
 app.listen(PORT);
