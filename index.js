@@ -17,21 +17,37 @@ let accessToken = "";
 //localhost:5000
 //Detta får ni ändra om ni vill. kan t.ex stå 3001 eller nåt :D
 const PORT = process.env.PORT || 5000;
+const HOST = "localhost";
 
 //Här "importerar" vi vår fil som innehåller funktionen som anropar på notion API för att hämta data.
-const GetWork = require('./Files/notion');
-
+// const GetWork = require('./Files/dbProjects');
+const GetWork = require('./Files/dbProjects');
+const GetPeople = require('./Files/dbPeople');
+const GetTimeReports = require('./Files/dbTimeReports');
 //Den här behövs så att vi ska kunna skicka data till vår frontend. Funkar inte annars!
 app.use(cors())
 /***************************************************/
 
-
 //Här säger vi på vilken route datan ska visas.
-app.get("/", async(req, res) =>{
+app.get("/projects", async(req, res) =>{
     //Vi anropar funktionen GetWork och sparar resultatet (som är det filtrerade datan) i names.
     const names = await GetWork();
     //Vi kör en json på datan vi fick
     res.json(names);
+});
+
+app.get("/people", async(req, res) =>{
+  //Vi anropar funktionen GetWork och sparar resultatet (som är det filtrerade datan) i names.
+  const names = await GetPeople();
+  //Vi kör en json på datan vi fick
+  res.json(names);
+});
+
+app.get("/timeReports", async(req, res) =>{
+  //Vi anropar funktionen GetWork och sparar resultatet (som är det filtrerade datan) i names.
+  const names = await GetTimeReports();
+  //Vi kör en json på datan vi fick
+  res.json(names);
 });
 
 //Hit skickas användaren efter att man godkänner inloggningen.
@@ -50,7 +66,7 @@ app.get("/authorize", async (req, res) => {
         },
         body: JSON.stringify({
           grant_type: 'authorization_code',                 //typ av begäran
-          code: userCode,                                   //Skickar temporara koden vi fick.
+          code: userCode,                                   //Skickar temporära koden vi fick.
           redirect_uri: 'http://localhost:5000/authorize',  //hit skickas datan sen.
         })
       }
@@ -98,4 +114,5 @@ app.get("/authorize", async (req, res) => {
       res.redirect(`http://localhost:3000/dashbord?userRole=${role}&userName=${name}&userEmail=${email}`)
   });
 
-app.listen(PORT);
+app.listen(PORT, HOST);
+console.log(`Server is running on http://${HOST}:${PORT}`);
