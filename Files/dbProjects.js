@@ -20,6 +20,7 @@ module.exports = GetProjects = async() => {
       ids.push(page.properties.Timereports.relation[i].id) 
     } 
       return { 
+        PageId: page.id,
         ProjectName: page.properties.Projectname.title[0].text.content, 
         Description: page.properties.Description.rich_text[0].text.content, 
         Status: page.properties.Status.select.name, 

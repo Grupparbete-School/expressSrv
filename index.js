@@ -54,8 +54,55 @@ app.get("/time", async(req, res) =>{
 });
 
 const authToken = process.env.NOTION_TOKEN;
+const notion = new Client ({auth: authToken});
+
+app.post('/AddComment', jsonParser, async(reg, res)=> {
+  const {Comment, pageId} = reg.body;
+  console.log(Comment);
+  
+  const response = await notion.comments.create({
+
+    "parent": {
+      "page_id": pageId
+    },
+    "rich_text": [
+      {
+        "text": {
+          "content": Comment
+        }
+      }
+    ]
+  })
+  console.log(response)
+});
+
+app.patch('/PatchComment', jsonParser, async(reg, res)=> {
+  const {Comment, pageId} = reg.body;
+
+  
+  const response = await notion.pages.update({
+
+        "page_id": pageId,
+    "properties": {
+    "Comments": {
+            "title": [
+                {
+                    "type": "text",
+                    "text": {
+                        "content": Comment
+                    }
+                }
+            ]
+        },
+    }
+  })
+  
+  console.log(response);
+  console.log(pageId);
+  console.log(Comment);
+  });
+
 const database_id3 = process.env.TIMEREPORTS_DB;
-const notion = new Client({auth: authToken});
 
 app.post("/AddTime", jsonParser, async(req, res) => {
   const { hours, date, projectid, PersonId } = req.body;
