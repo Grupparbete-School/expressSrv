@@ -1,30 +1,34 @@
-const dotenv = require("dotenv").config();                    
+const dotenv = require("dotenv").config();             
 const {client, Client} = require("@notionhq/client");         
+
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
-const databaseTime = process.env.TIMEREPORTS_DB;
+const database_id3 = process.env.TIMEREPORTS_DB;
 
-module.exports = GetTime = async() => {
+module.exports = GetTimereports = async() => {
   
   const myDownload = {
-   
-    path: "databases/" + databaseTime + "/query",
+ 
+    path: "databases/" + database_id3 + "/query",
+
     method: "POST",
   };
 
   const {results}=await notion.request(myDownload);
   
-  const time = results.map((page)=>{
+  const timereports = results.map((page)=>{
+
     return {
-      Projectid: page.properties.Project.relation[0].id,
-      Hours: page.properties.number,
+      PageId: page.id,
+      ProjectId: page.properties.Project.relation,
       WorkedHours: page.properties.Hours.number,
-      StartDate: page.properties.Date.date ? page.properties.Date.date.start : null,
-      EndDate: page.properties.Date.date ? page.properties.Date.date.start : null,
+      StartDate: page.properties.Date.date ? page.properties.Date.date.start: null,
+      EndDate: page.properties.Date.date ? page.properties.Date.date.end: null,
       PersonId: page.properties.Person.relation,
       Url_comments: page.url,
     }
   });
-  return time;
+  
+  return timereports;
 };

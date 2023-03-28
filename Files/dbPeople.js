@@ -1,23 +1,29 @@
-const dotenv = require("dotenv").config();                    
-const {client, Client} = require("@notionhq/client");         
+const dotenv = require("dotenv").config();
+const { client, Client } = require("@notionhq/client");
+
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
-const databasePeople = process.env.PEOPLE_DB;
+const database_id = process.env.PEOPLE_DB;
 
-module.exports = GetWork = async() => {
-  
+module.exports = GetPeople = async () => {
+
   const myDownload = {
-   
-    path: "databases/" + databasePeople + "/query",
+
+    path: "databases/" + database_id + "/query",
+
     method: "POST",
   };
 
-  const {results}=await notion.request(myDownload);
-  
-  const people = results.map((page)=>{
+  const { results } = await notion.request(myDownload);
+
+  const people = results.map((page) => {
+    let ids = [];
+    for (let i = 0; i < page.properties.Timereports.relation.length; i++) {
+      ids.push(page.properties.Timereports.relation[i].id)
+    }
     return {
-      TimeReportsId: page.properties.Timereports.relation,
+      TimeReportsId: ids,
       PersonId: page.id,
       Name: page.properties.Name.title[0].text.content,
       Role: page.properties.Role.select.name,
@@ -26,5 +32,6 @@ module.exports = GetWork = async() => {
       Url: page.url,
     }
   });
+
   return people;
 };

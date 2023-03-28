@@ -1,37 +1,36 @@
-const dotenv = require("dotenv").config();                    
+const dotenv = require("dotenv").config();             
 const {client, Client} = require("@notionhq/client");         
+
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
 });
-
-const databaseProjects = process.env.PROJECTS_DB;
+const database_id2 = process.env.PROJECTS_DB;
 
 module.exports = GetProjects = async() => {
-  
-  const myDownload = {
-   
-    path: "databases/" + databaseProjects + "/query",
-    method: "POST",
+    const myDownload = {
+      path: "databases/" + database_id2 + "/query",
+      method: "POST",
   };
 
   const {results}=await notion.request(myDownload);
   
-  const projects = results.map((page)=>{
-    return {
-        TimeReportsId: page.properties.Timereports.relation,
-        ProjectName: page.properties.Projectname.title[0].text.content,
+  const projects = results.map((page) => { 
+    let ids = []; 
+    for (let i = 0; i < page.properties.Timereports.relation.length; i++){ 
+      ids.push(page.properties.Timereports.relation[i].id) 
+    } 
+      return { 
+        ProjectName: page.properties.Projectname.title[0].text.content, 
         Description: page.properties.Description.rich_text[0].text.content, 
-        Status: page.properties.Status.select.name,
-        Maxhours: page.properties.Hours.number,
-        UsedHours: page.properties.WorkedHours.rollup.number,
-        WorkedHours: page.properties.WorkedHours.rollup.number,
-        HoursLeft: page.properties.HoursLeft.formula.number,
-        StartDate: page.properties.Timespan.date.start,
-        EndDate: page.properties.Timespan.date.end,
-        Id: page.id,
-        PersonId: page.properties.Timereports.relation[0].id,
-      }
-  });
- 
+        Status: page.properties.Status.select.name, 
+        MaxHours: page.properties.Hours.number, 
+        UsedHours: page.properties.WorkedHours.rollup.number, 
+        HoursLeft: page.properties.HoursLeft.formula.number, 
+        StartDate: page.properties.Timespan.date.start, 
+        EndDate: page.properties.Timespan.date.end, 
+        PersonId: ids
+      }; 
+    });
+  
   return projects;
 };
