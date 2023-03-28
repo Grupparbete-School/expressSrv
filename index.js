@@ -19,6 +19,7 @@ let accessToken = "";
 //localhost:5000
 //Detta får ni ändra om ni vill. kan t.ex stå 3001 eller nåt :D
 const PORT = process.env.PORT || 5000;
+const HOST = "localhost";
 
 //Här "importerar" vi vår fil som innehåller funktionen som anropar på notion API för att hämta data.
  
@@ -112,7 +113,7 @@ app.get("/authorize", async (req, res) => {
         },
         body: JSON.stringify({
           grant_type: 'authorization_code',                 //typ av begäran
-          code: userCode,                                   //Skickar temporara koden vi fick.
+          code: userCode,                                   //Skickar temporära koden vi fick.
           redirect_uri: 'http://localhost:5000/authorize',  //hit skickas datan sen.
         })
       }
@@ -160,4 +161,7 @@ app.get("/authorize", async (req, res) => {
       res.redirect(`http://localhost:3000/dashbord?userRole=${role}&userName=${name}&userEmail=${email}`)
   });
 
-app.listen(PORT);
+app.listen(PORT, HOST);
+console.log(`Server is running on http://${HOST}:${PORT}`);
+
+// console.log(btoa('clientID:secretID'))
