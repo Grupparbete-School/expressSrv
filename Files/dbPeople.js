@@ -16,8 +16,13 @@ module.exports = GetPeople = async() => {
   const {results}=await notion.request(myDownload);
   
   const people = results.map((page)=>{
-    return {
-        TimeReportsId: page.properties.Timereports.relation[0]?.id,
+    
+  let ids = []; 
+  for (let i = 0; i < page.properties.Timereports.relation.length; i++)
+  { ids.push(page.properties.Timereports.relation[i].id) }
+
+    return {  
+        peopleId: ids,
         PersonId: page.id,
         Name: page.properties.Name.title[0].text.content,
         Role: page.properties.Role.select.name,

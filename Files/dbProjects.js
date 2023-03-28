@@ -14,7 +14,14 @@ module.exports = GetWork = async () => {
   };
   const { results } = await notion.request(myDownload);
   const projects = results.map((page) => {
+    
+    let ids = []; 
+    for (let i = 0; i < page.properties.Timereports.relation.length; i++)
+    { ids.push(page.properties.Timereports.relation[i].id) }
+    
     return {
+      PageId: page.id,
+      peopleId: ids,
       ProjectName: page.properties.Projectname.title[0].text.content,
       Description: page.properties.Description.rich_text[0].text.content,
       Status: page.properties.Status.select.name,

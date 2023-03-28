@@ -16,13 +16,16 @@ module.exports = GetTimeReports = async () => {
   };
   const { results } = await notion.request(myDownload);
   const timeReports = results.map((page) => {
+    
+  const personId = page.properties.Person.relation.map((relation) => { return relation.id; });
     return {
-      ProjectId: page.properties.Project.relation[0].id,
-      WorkedHours: page.properties.Hours.number,
-      StartDate: page.properties.Date.date.start,
-      EndDate: page.properties.Date.date.end,
-      PersonId: page.properties.Person.relation[0].id,
-      Url_comments: page.url,
+       PageId: page.id,
+       ProjectId: page.properties.Project.relation,
+       WorkedHours: page.properties.Hours.number,
+       StartDate: page.properties.Date.date ? page.properties.Date.date.start : null,
+       EndDate: page.properties.Date.date ? page.properties.Date.date.end : null,
+       PersonId: page.properties.Person.relation,
+       Url_comments: page.url,
     };
   });
   return timeReports;

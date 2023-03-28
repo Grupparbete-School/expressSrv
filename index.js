@@ -5,6 +5,9 @@ const cors = require('cors');
 require('dotenv').config();
 const { Client } = require('@notionhq/client');
 
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
+
 //skapar de variabler vi vill att alla "routes" ska ha tillgång till.
 const encoded = process.env.SEC_ID_BASE64
 let userCode = "";
@@ -49,6 +52,56 @@ app.get("/timeReports", async(req, res) =>{
   //Vi kör en json på datan vi fick
   res.json(names);
 });
+
+const authToken = process.env.NOTION_TOKEN;
+const notion = new Client ({auth: authToken});
+
+app.post('/AddComment', jsonParser, async(reg, res)=> {
+  const {Comment, pageId} = reg.body;
+  console.log(Comment);
+  
+  const response = await notion.comments.create({
+
+    "parent": {
+      "page_id": pageId
+    },
+    "rich_text": [
+      {
+        "text": {
+          "content": Comment
+        }
+      }
+    ]
+  })
+  console.log(response)
+});
+
+app.patch('/PatchComment', jsonParser, async(reg, res)=> {
+  const {Comment, pageId} = reg.body;
+
+  
+  const response = await notion.pages.update({
+
+        "page_id": pageId,
+    "properties": {
+    "Comments": {
+            "title": [
+                {
+                    "type": "text",
+                    "text": {
+                        "content": Comment
+                    }
+                }
+            ]
+        },
+    }
+  })
+  
+  console.log(response);
+  console.log(pageId);
+  console.log(Comment);
+  });
+
 
 //Hit skickas användaren efter att man godkänner inloggningen.
 app.get("/authorize", async (req, res) => {
