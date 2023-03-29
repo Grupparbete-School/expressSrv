@@ -184,7 +184,7 @@ app.get("/authorize", async (req, res) => {
 
       //Här kör vi funktionen som finns i "./Files/Notion.js"
       //Den hämtar all data inuti "PEOPLE"-databasen och sparar det i variabeln names.
-      const names = await GetWork();
+      const names = await GetPeople();
       console.log(names)
       //Kör en find-metod för att kolla om mejladressen som finns inuti "names" liknar någon av 
       //email-raderna i datan vi fick.
