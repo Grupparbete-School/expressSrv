@@ -16,8 +16,10 @@ module.exports = GetTime = async() => {
   const {results}=await notion.request(myDownload);
   
   const time = results.map((page)=>{
+    
     return {
-      Projectid: page.properties.Project.relation[0].id,
+      PageId: page.id,
+      Projectid: page.properties.Project.relation[0]?.id,
       Hours: page.properties.number,
       WorkedHours: page.properties.Hours.number,
       StartDate: page.properties.Date.date ? page.properties.Date.date.start : null,

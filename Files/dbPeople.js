@@ -25,8 +25,8 @@ module.exports = GetPeople = async () => {
     return {
       TimeReportsId: ids,
       PersonId: page.id,
-      Name: page.properties.Name.title[0].text.content,
-      Role: page.properties.Role.select.name,
+      Name: page.properties.Name.title[0]?.text.content,
+      Role: page.properties.Role.select?.name,
       Email: page.properties.Email.email,
       WorkedHours: page.properties.TotalHours.rollup.number,
       Url: page.url,
