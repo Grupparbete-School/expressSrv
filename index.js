@@ -144,6 +144,32 @@ app.post("/AddTime", jsonParser, async(req, res) => {
   })
 })
 
+app.patch('/PatchChange', jsonParser, async (reg, res) => {
+  const { Hours, PageIds } = reg.body;
+  const hours = parseInt(reg.body.Hours)
+  
+  const page = await notion.pages.retrieve({
+    page_id: PageIds,
+  });
+
+  console.log(page)
+
+  const hours_property_id = page.properties['Hours'].id;
+
+  console.log(hours_property_id)
+  
+  const response = await notion.pages.update({
+    page_id: PageIds,
+    "properties":
+    {
+      [hours_property_id]: {
+        "number": hours,
+      }
+    }
+  })
+  //console.log(response)
+});
+
 //Hit skickas användaren efter att man godkänner inloggningen.
 app.get("/authorize", async (req, res) => {
 
