@@ -23,13 +23,14 @@ module.exports = GetProjects = async() => {
         PageId: page.id,
         ProjectName: page.properties.Projectname.title[0].text.content, 
         Description: page.properties.Description.rich_text[0].text.content, 
-        Status: page.properties.Status.select.name, 
+        Status: page.properties.Status.select.name,
+        StatusColor: page.properties.Status.select.color,
         MaxHours: page.properties.Hours.number, 
         UsedHours: page.properties.WorkedHours.rollup.number, 
         HoursLeft: page.properties.HoursLeft.formula.number, 
         StartDate: page.properties.Timespan.date.start, 
         EndDate: page.properties.Timespan.date.end, 
-        PersonId: ids
+        PersonId: ids,
       }; 
     });
   

@@ -170,6 +170,27 @@ app.patch('/PatchChange', jsonParser, async (reg, res) => {
   //console.log(response)
 });
 
+//Changes status on projects
+app.patch('/ChangeStatus', jsonParser, async(reg, res)=> {
+  const {status, pageId} = reg.body;
+
+  const response = await notion.pages.update({
+
+    page_id: pageId,
+  "properties": {
+      "Status": {
+          "select": {
+              "name": status
+          }
+      }
+  }
+  })
+  console.log(response);
+  console.log(status);
+  console.log(pageId);
+  });
+
+
 //Hit skickas användaren efter att man godkänner inloggningen.
 app.get("/authorize", async (req, res) => {
 
