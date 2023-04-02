@@ -190,6 +190,65 @@ app.patch('/ChangeStatus', jsonParser, async(reg, res)=> {
   console.log(pageId);
   });
 
+  const projectID = process.env.PROJECTS_DB;
+  
+  app.post('/CreateProject', jsonParser, async(reg, res)=> {
+    const {
+      ProjectName, 
+      MaxHours,
+      StartDate,
+      EndDate,
+      Status,
+      Description,
+    } = reg.body;
+  
+    const hours = parseInt(MaxHours);
+
+    const response = await notion.pages.create({
+
+        "parent": {
+          "type": "database_id",
+          "database_id": projectID
+        },
+        "properties": {
+          "Projectname": {
+            "title": [
+              {
+                "text": {
+                  "content": ProjectName
+                }
+              }
+            ]
+          },
+          "Hours": {
+            "number": hours
+          },
+          "Timespan": {
+            "date": {
+              "start": StartDate,
+              "end": EndDate
+            }
+          },
+          "Description": {
+            "rich_text": [
+              {
+                "text": {
+                  "content": Description
+                }
+              }
+            ]
+          },
+          "Status": {
+            "select": {
+              "name": Status
+            }
+          }
+        }
+      })
+      console.log(MaxHours);
+    });
+      
+
 
 //Hit skickas användaren efter att man godkänner inloggningen.
 app.get("/authorize", async (req, res) => {
