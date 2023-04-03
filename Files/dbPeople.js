@@ -30,6 +30,7 @@ module.exports = GetPeople = async () => {
       Email: page.properties.Email.email,
       WorkedHours: page.properties.TotalHours.rollup.number,
       Url: page.url,
+      ProfileImage: page.properties.ProfileImage.files[0]?.file
     }
   });
 
