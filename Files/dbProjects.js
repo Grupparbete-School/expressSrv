@@ -31,7 +31,8 @@ module.exports = GetProjects = async() => {
         StartDate: page.properties.Timespan.date.start, 
         EndDate: page.properties.Timespan.date.end, 
         PersonId: ids,
-        ImageIndex: page.properties.ImageIndex.number
+        ImageIndex: page.properties.ImageIndex.number,
+        ProjectImage: page.properties.ImageIndex.files[0]?.file
       }; 
     });
   
