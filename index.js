@@ -256,7 +256,6 @@ app.post("/AddEmployee", jsonParser, async (reg, res) => {
         type: "select",
         select: {
           name: Role,
-          color: "default",
         },
       },
       Name: {
