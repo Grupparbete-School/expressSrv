@@ -275,6 +275,67 @@ app.post("/AddEmployee", jsonParser, async (reg, res) => {
   
 });
 
+app.patch("/EditTimeReport", jsonParser, async (reg, res) => {
+  const { 
+    pageId,
+    newProject,
+    newDate,
+    newHours,
+    comment,
+    description,
+  } = reg.body;
+
+  const hours = parseInt(newHours);
+
+  const response = await notion.pages.update({
+
+          page_id: pageId,
+              "properties": {
+                  "Hours": {
+                      "id": "%3BA_%5C",
+                      "type": "number",
+                      "number": hours
+                  },
+                  "Date": {
+                      "type": "date",
+                      "date": {
+                          "start": newDate,
+                          "end": null
+                      }
+                  },
+                  "Project": {
+                      "type": "relation",
+                      "relation": [
+                          {
+                              "id": newProject
+                          }
+                      ]
+                  },
+                  "Person": {
+                      "type": "relation",
+                      "relation": [
+                          {
+                              "id": "795ffdd6-c55e-4351-b360-5628c258bace"
+                          }
+                      ]
+                  },
+                  "Comments": {
+              "title": [
+                  {
+                      "type": "text",
+                      "text": {
+                          "content": comment
+                      }
+                  }
+              ]
+          }
+      }
+  });
+
+  console.log(response);
+  console.log(pageId);
+  console.log(comment);
+});
 //Hit skickas användaren efter att man godkänner inloggningen.
 app.get("/authorize", async (req, res) => {
   //uniq kod som genereras sparas här. Behövs för att få token.
